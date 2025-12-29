@@ -56,11 +56,13 @@ Examples: `FRESH-123.jpg`, `HALF-456.jpg`, `SPOILED-789.jpg`.
 - **Macro Sensitivity (Recall):** **0.9909**
 - **Macro Specificity:** **0.9947**
 
-**Confusion Matrix** (rows = true, cols = predicted):
-[[249,   7,   0],
- [  0, 237,   0],
- [  0,   0, 187]]
+**Confusion Matrix (rows = true, cols = predicted)**
 
+| True \ Pred | FRESH | HALF | SPOILED |
+|---:|---:|---:|---:|
+| **FRESH**   | 249 | 7   | 0   |
+| **HALF**    | 0   | 237 | 0   |
+| **SPOILED** | 0   | 0   | 187 |
 
 Main error mode: **Fresh → Half-Fresh** (7 cases). Half-Fresh and Spoiled are otherwise classified cleanly in this split.
 
