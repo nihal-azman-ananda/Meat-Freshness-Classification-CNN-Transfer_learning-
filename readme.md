@@ -1,90 +1,87 @@
-# Meat Freshness Classification (Fresh / Half-Fresh / Spoiled) — ResNet-50 Transfer Learning
+# Meat Freshness Classification (Fresh / Half-Fresh / Spoiled)
 
-This repository contains a **reproducible, portfolio-ready** image classification pipeline that predicts meat freshness into three classes: **Fresh**, **Half-Fresh**, and **Spoiled**. The solution fine-tunes an **ImageNet-pretrained ResNet-50** using PyTorch and reports paper-style metrics (confusion matrix, macro sensitivity/specificity) with multi-seed benchmarking.
+This repository contains a reproducible image-classification workflow for predicting meat freshness into three classes:
 
-## Key Features
-- **Model:** ResNet-50 (ImageNet pretrained) fine-tuned for 3-class classification
-- **Preprocessing:** resize to **416×416** + ImageNet normalization
-- **Training:** Adam optimizer + early stopping on validation loss
-- **Evaluation:** confusion matrix, classification report, **macro sensitivity & specificity**
-- **Reproducibility:** fixed seeds, optional deterministic mode, multi-seed mean ± std
-- **Interpretability (optional):** Class Activation Maps (CAM) overlays
+- **Fresh**
+- **Half-Fresh**
+- **Spoiled**
+
+The project includes:
+- a focused **ResNet-50 transfer-learning notebook**, and
+- a **multi-architecture benchmark notebook** with aggregated results in CSV format.
+
+---
+
+## Repository Structure
+
+- `MeatFreshness_ResNet50.ipynb` — End-to-end transfer-learning pipeline for ResNet-50 (training + evaluation).  
+- `Meatfreshness_Benchmark.ipynb` — Comparative benchmark across multiple architectures and seeds.  
+- `results/benchmark_raw.csv` — Per-run raw metrics (model × seed).  
+- `results/benchmark_summary.csv` — Mean ± std metrics aggregated by model.  
+- `LICENSE` — Project license.
 
 ---
 
 ## Dataset
-Kaggle dataset link:
-https://www.kaggle.com/datasets/vinayakshanawad/meat-freshness-image-dataset
+
+Kaggle dataset:  
+<https://www.kaggle.com/datasets/vinayakshanawad/meat-freshness-image-dataset>
 
 ### Expected folder layout
-The notebook supports common folder layouts, including Roboflow style (`images/` subfolder):
 
-```bash
+The notebooks support common layouts, including Roboflow-style `images/` subfolders:
+
+```text
 Meat Freshness.v1-new-dataset.multiclass/
-train/
-(images/) *.jpg
-valid/
-(images/) *.jpg
+├── train/
+│   ├── images/ (optional)
+│   └── *.jpg
+└── valid/
+    ├── images/ (optional)
+    └── *.jpg
 ```
 
-**Label inference:** class name is read from the filename prefix before `-`  
-Examples: `FRESH-123.jpg`, `HALF-456.jpg`, `SPOILED-789.jpg`.
+### Label inference
+
+Class labels are inferred from the filename prefix before `-`.
+Examples:
+- `FRESH-123.jpg`
+- `HALF-456.jpg`
+- `SPOILED-789.jpg`
 
 ---
 
-## Method Overview
-1. **Preprocessing**
-   - Resize images to 416×416
-   - Normalize using ImageNet mean/std
-2. **Transfer Learning**
-   - Initialize ResNet-50 with ImageNet weights
-   - Replace final fully connected layer for 3 classes
-3. **Optimization**
-   - Cross entropy loss
-   - Adam optimizer
-   - Early stopping using validation loss (`patience`, `min_delta`)
-4. **Evaluation**
-   - Confusion matrix + precision/recall/F1 report
-   - Macro **sensitivity (recall)** and macro **specificity** (one-vs-rest)
-   - Multi-seed benchmarking (mean ± std)
+## ResNet-50 Pipeline Highlights
+
+- **Backbone:** ImageNet-pretrained ResNet-50
+- **Input preprocessing:** Resize to **416×416** + ImageNet normalization
+- **Optimization:** Cross-entropy loss + Adam optimizer
+- **Regularization/controls:** Early stopping on validation loss, fixed seeds, deterministic option
+- **Evaluation:** Accuracy, macro recall/sensitivity, macro F1, macro specificity, confusion matrix
 
 ---
 
-## Results (from executed notebook)
-### Single run (seed = 2023, stratified 70/30 split)
-- **Test Accuracy:** **0.9897** (680 test images)
-- **Macro Sensitivity (Recall):** **0.9909**
-- **Macro Specificity:** **0.9947**
+## Benchmark Results (from `results/benchmark_summary.csv`)
 
-**Confusion Matrix (rows = true, cols = predicted)**
+Metrics below are the **mean ± std over 5 seeds**.
 
-| True \ Pred | FRESH | HALF | SPOILED |
-|---:|---:|---:|---:|
-| **FRESH**   | 249 | 7   | 0   |
-| **HALF**    | 0   | 237 | 0   |
-| **SPOILED** | 0   | 0   | 187 |
+| Model | Accuracy | Macro Recall | Macro F1 | Macro Specificity |
+|---|---:|---:|---:|---:|
+| efficientnet_b0 | 0.9994 ± 0.0008 | 0.9995 ± 0.0007 | 0.9995 ± 0.0007 | 0.9997 ± 0.0004 |
+| densenet121 | 0.9979 ± 0.0013 | 0.9980 ± 0.0012 | 0.9981 ± 0.0012 | 0.9989 ± 0.0007 |
+| efficientnet_v2_s | 0.9968 ± 0.0019 | 0.9970 ± 0.0017 | 0.9970 ± 0.0018 | 0.9983 ± 0.0010 |
+| mobilenet_v3_large | 0.9965 ± 0.0038 | 0.9967 ± 0.0036 | 0.9966 ± 0.0038 | 0.9982 ± 0.0019 |
+| convnext_tiny | 0.9962 ± 0.0022 | 0.9965 ± 0.0021 | 0.9964 ± 0.0021 | 0.9980 ± 0.0012 |
+| swin_t | 0.9959 ± 0.0037 | 0.9958 ± 0.0041 | 0.9959 ± 0.0037 | 0.9979 ± 0.0019 |
+| resnet50 | 0.9950 ± 0.0046 | 0.9954 ± 0.0041 | 0.9954 ± 0.0042 | 0.9974 ± 0.0024 |
+| vit_b_16 | 0.9580 ± 0.0145 | 0.9617 ± 0.0132 | 0.9610 ± 0.0138 | 0.9783 ± 0.0073 |
 
-Main error mode: **Fresh → Half-Fresh** (7 cases). Half-Fresh and Spoiled are otherwise classified cleanly in this split.
-
-### Multi-seed benchmark (5 seeds)
-Mean ± std across 5 runs:
-- **Accuracy:** 0.9879 ± 0.0070
-- **Macro Recall / Sensitivity:** 0.9890 ± 0.0062
-- **Macro F1:** 0.9887 ± 0.0068
-- **Macro Specificity:** 0.9938 ± 0.0034
-
-> Note: Metrics depend on dataset organization, split, seed, and environment versions. This repository includes utilities to reproduce runs and report mean ± std.
+> These values are read directly from `results/benchmark_summary.csv`.
 
 ---
 
-## Repository Contents
-- `MeatFreshness_ResNet50_Professional.ipynb` — end-to-end pipeline (data → training → evaluation → optional CAM)
-- `saved_models/` — best checkpoints (created after training)
+## Quick Start
 
----
-
-## Setup
-### Option A: pip (recommended)
 ```bash
 python -m venv .venv
 # Windows: .venv\Scripts\activate
@@ -93,24 +90,22 @@ python -m venv .venv
 pip install -U pip
 pip install torch torchvision torchaudio
 pip install numpy pandas scikit-learn pillow matplotlib tqdm opencv-python
+```
 
-## How to Run
+### Run notebooks
 
-1. Download the dataset from Kaggle and extract it locally.
-2. Open `MeatFreshness_ResNet50_Professional.ipynb`.
-3. Set the dataset path in the config:
-   ```python
-   cfg.ROOT = "path/to/your/dataset/root"
+1. Download and extract the dataset from Kaggle.
+2. Open either notebook:
+   - `MeatFreshness_ResNet50.ipynb` for the single-model pipeline, or
+   - `Meatfreshness_Benchmark.ipynb` for multi-model comparison.
+3. Set dataset root in the configuration cell (for example `cfg.ROOT = "path/to/dataset"`).
 4. Run all cells.
 
-Reproducibility Notes
+---
 
-Seeds are controlled via set_seed(seed, deterministic=...).
+## Reproducibility Notes
 
-Multi-seed evaluation is included to report mean ± std.
+- Seed control is included (`set_seed(seed, deterministic=...)`).
+- Multi-seed evaluation is used to report mean ± std.
+- Benchmark CSV files are versioned in `results/` for traceability.
 
-Optional duplicate leakage check (MD5) is included to detect exact duplicates across splits.
-
-Interpretability (Optional)
-
-The notebook includes Class Activation Maps (CAM) to visualize which regions of an image most influenced the predicted class. This is helpful for debugging and for demonstrating model reasoning in a portfolio context.
