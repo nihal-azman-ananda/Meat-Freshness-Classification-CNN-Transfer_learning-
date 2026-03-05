@@ -1,0 +1,9 @@
+model,accuracy,macro_recall,macro_f1,macro_sensitivity,macro_specificity,ckpt
+efficientnet_v2_s,1.0,1.0,1.0,0.9999999999999933,0.9999999999999966,saved_models/efficientnet_v2_s/final_holdout/meat_efficientnet_v2_s_final_best.pth
+efficientnet_b0,0.9977973568281938,0.9980506822612085,0.9979709581826199,0.9980506822612019,0.9988738738738704,saved_models/efficientnet_b0/final_holdout/meat_efficientnet_b0_final_best.pth
+swin_t,0.9977973568281938,0.9978902953586498,0.997969981643451,0.9978902953586432,0.9988221436984653,saved_models/swin_t/final_holdout/meat_swin_t_final_best.pth
+densenet121,0.9977973568281938,0.9978902953586498,0.997969981643451,0.9978902953586432,0.9988221436984653,saved_models/densenet121/final_holdout/meat_densenet121_final_best.pth
+mobilenet_v3_large,0.9955947136563876,0.9961013645224172,0.9959427796275743,0.9961013645224105,0.9977477477477444,saved_models/mobilenet_v3_large/final_holdout/meat_mobilenet_v3_large_final_best.pth
+convnext_tiny,0.9933920704845814,0.993991659881067,0.9935566203054425,0.9939916598810603,0.9967345765218072,saved_models/convnext_tiny/final_holdout/meat_convnext_tiny_final_best.pth
+resnet50,0.9933920704845814,0.993831272978508,0.9939099449303531,0.9938312729785016,0.996518161270808,saved_models/resnet50/final_holdout/meat_resnet50_final_best.pth
+vit_b_16,0.9823788546255506,0.9837639104794335,0.9837639104794335,0.9837639104794268,0.9907840702893673,saved_models/vit_b_16/final_holdout/meat_vit_b_16_final_best.pth
