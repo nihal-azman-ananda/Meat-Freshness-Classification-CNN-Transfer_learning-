@@ -13,7 +13,7 @@ This repository contains both a single-model ResNet-50 workflow and a multi-arch
 ## Project Contents
 
 - `MeatFreshness_ResNet50.ipynb` — focused transfer-learning pipeline (ResNet-50) with early stopping, test metrics, and optional CAM visualization.
-- `MeatFreshness_final_version.ipynb` — publication-style benchmark protocol with:
+- `MeatFreshness_final_version.ipynb` — benchmark protocol with:
   - hold-out test split,
   - stratified K-fold cross-validation over multiple split seeds,
   - model zoo comparison,
